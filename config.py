@@ -1,5 +1,14 @@
-# Hardware configuration
-RELAY_PINS = [5, 6, 13, 19, 26]           # GPIO pins controlling relays
-DIGITAL_PINS = [17, 27, 22]               # GPIO pins for digital test points
-ADC_CHANNELS = [0, 1, 2]                  # MCP3008 ADC channels for analog measurements
-VREF = 3.3                                # Reference voltage for ADC
+# config.py
+# GPIO pins for relays controlling each PCB test point
+RELAY_PINS = [17, 18, 27, 22, 23]  # BCM numbering
+# GPIO pins for digital inputs (if any)
+DIGITAL_PINS = [5, 6, 13, 19, 26]
+
+# Sensor limits (min, max) for pass/fail
+SENSOR_LIMITS = [
+    (0, 100),
+    (0, 200),
+    (0, 500),
+    (0, 1000),
+    (0, 1500)
+]
