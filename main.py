@@ -1,16 +1,20 @@
 import tkinter as tk
 from tkinter import ttk, messagebox, scrolledtext
-import serial
 import threading
 import time
+import random
+
+# Optional: uncomment if using real serial data
+# import serial
 
 # ============================
-# Serial Config
+# Serial / Dummy Config
 # ============================
-SERIAL_PORT = "/dev/ttyAMA0"   # Adjust to /dev/ttyUSB0 if needed
+SERIAL_PORT = "/dev/ttyAMA0"  # Change to /dev/ttyUSB0 if needed
 BAUD_RATE = 9600
+use_dummy = True  # True = simulate data, False = use real UART
 
-# Test limits (example ranges for each sensor)
+# Test limits (min, max) for each sensor
 SENSOR_LIMITS = [
     (0, 100),   # Sensor 1
     (0, 200),   # Sensor 2
@@ -25,32 +29,46 @@ running = False
 thread = None
 
 # ============================
-# Serial Reader Thread
+# Serial / Dummy Reader
 # ============================
 def read_serial():
     global running
     while running:
         try:
-            if ser and ser.in_waiting > 0:
-                line = ser.readline().decode('utf-8').strip()
-                if line:
-                    process_data(line)
-        except UnicodeDecodeError:
-            process_data("[ERROR] Invalid data encoding")
+            if use_dummy:
+                # Generate dummy sensor values
+                dummy_values = [
+                    round(random.uniform(0, 120), 2),
+                    round(random.uniform(150, 250), 2),
+                    round(random.uniform(400, 600), 2),
+                    round(random.uniform(900, 1100), 2),
+                    round(random.uniform(1400, 1600), 2),
+                ]
+                line = ",".join(map(str, dummy_values))
+
+                # Insert raw data into text box
+                text_box.after(0, lambda l=line: text_box.insert(tk.END, l + "\n"))
+                text_box.after(0, lambda: text_box.see(tk.END))
+
+                # Process data for sensor labels & pass/fail
+                process_data(line)
+
+                time.sleep(2)  # slow enough to read updates
+            else:
+                if ser and ser.in_waiting > 0:
+                    line = ser.readline().decode('utf-8').strip()
+                    if line:
+                        text_box.after(0, lambda l=line: text_box.insert(tk.END, l + "\n"))
+                        text_box.after(0, lambda: text_box.see(tk.END))
+                        process_data(line)
         except Exception as e:
             process_data(f"[ERROR] {e}")
             time.sleep(0.5)
-        time.sleep(0.01)
 
 # ============================
-# Process Incoming Data
+# Process Data
 # ============================
 def process_data(msg):
-    # Append to raw output box
-    text_box.after(0, lambda: text_box.insert(tk.END, msg + "\n"))
-    text_box.after(0, lambda: text_box.see(tk.END))
-
-    # Parse values and check pass/fail
     if "," in msg:
         try:
             values = msg.split(",")
@@ -93,12 +111,15 @@ def process_data(msg):
             text_box.after(0, lambda: text_box.insert(tk.END, f"[ERROR] Parsing data: {e}\n"))
 
 # ============================
-# Start / Stop Serial Reading
+# Start / Stop
 # ============================
 def start_serial():
     global running, ser, thread
     try:
-        ser = serial.Serial(SERIAL_PORT, BAUD_RATE, timeout=1)
+        if not use_dummy:
+            # Uncomment for real UART
+            # ser = serial.Serial(SERIAL_PORT, BAUD_RATE, timeout=1)
+            pass
         running = True
         thread = threading.Thread(target=read_serial)
         thread.daemon = True
@@ -121,7 +142,6 @@ def stop_serial():
     status_bar.config(text="Not connected", foreground="black")
 
 def reset_sensors():
-    """Reset sensors to 0.00 (PASS) and clear log"""
     text_box.delete(1.0, tk.END)
     for i, lbl in enumerate(sensor_labels):
         lbl.config(text=f"Sensor {i+1}: 0.00 (PASS)", foreground="green")
@@ -135,37 +155,31 @@ def on_closing():
 # GUI Setup
 # ============================
 root = tk.Tk()
-root.title(" PCB Tester GUI")
+root.title("PCB Tester GUI")
 root.geometry("700x500")
 root.protocol("WM_DELETE_WINDOW", on_closing)
 
 frame = ttk.Frame(root, padding=10)
 frame.pack(fill=tk.BOTH, expand=True)
 
-# Title
 title_label = ttk.Label(frame, text="PCB Sensor Readings", font=("Arial", 14, "bold"))
 title_label.pack(pady=5)
 
-# Sensor labels frame
 sensor_frame = ttk.LabelFrame(frame, text="Sensor Values", padding=10)
 sensor_frame.pack(fill=tk.X, pady=5)
 
 sensor_labels = []
 for i in range(5):
-    # Default: show 0.00 (PASS) in green
-    lbl = ttk.Label(sensor_frame, text=f"Sensor {i+1}: 0.00 (PASS)",
-                    font=("Arial", 10), foreground="green")
+    lbl = ttk.Label(sensor_frame, text=f"Sensor {i+1}: 0.00 (PASS)", font=("Arial", 10), foreground="green")
     lbl.pack(anchor="w", pady=2)
     sensor_labels.append(lbl)
 
-# Text box for raw serial output
 text_frame = ttk.LabelFrame(frame, text="Raw Serial Data", padding=5)
 text_frame.pack(fill=tk.BOTH, expand=True, pady=5)
 
 text_box = scrolledtext.ScrolledText(text_frame, height=15, width=80, font=("Consolas", 9))
 text_box.pack(fill=tk.BOTH, expand=True)
 
-# Buttons
 btn_frame = ttk.Frame(frame)
 btn_frame.pack(pady=10)
 
@@ -181,8 +195,8 @@ clear_btn.grid(row=0, column=2, padx=5)
 quit_btn = ttk.Button(btn_frame, text="Quit", command=on_closing)
 quit_btn.grid(row=0, column=3, padx=5)
 
-# Status bar
 status_bar = ttk.Label(root, text="Not connected", relief=tk.SUNKEN, anchor=tk.W)
 status_bar.pack(side=tk.BOTTOM, fill=tk.X)
-
+test_btn = ttk.Button(btn_frame, text="Run Full Test", command=run_test_automation)
+test_btn.grid(row=0, column=4, padx=5)
 root.mainloop()
