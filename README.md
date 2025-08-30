@@ -20,7 +20,7 @@
 ## 🖼️ System Overview  
 
 ```
-Raspberry Pi  ──>  Relay Module ──> PCB Test Points
+Raspberry Pi  ──>  UART ──> PCB Test Points
        │
        ├── MCP3008 (ADC) ──> Analog Measurements
        ├── GPIO ──────────> Digital Continuity Tests
