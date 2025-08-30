@@ -1,94 +1,140 @@
-PCB Test Automation with Raspberry Pi & Python
+# ⚡ PCB Test Automation with Raspberry Pi & Python  
 
-A full-featured PCB test automation system built with Python and Raspberry Pi, designed for electronics engineers and test engineers. This project allows automated testing of PCB test points, including digital and analog measurements, pass/fail evaluation, relay-controlled switching, and a web-based dashboard for real-time monitoring.
+> 🛠️ A full-featured **PCB test automation system** built with Python and Raspberry Pi, designed for electronics engineers and test engineers.  
+> This project enables **automated testing of PCB test points**, including **digital/analog measurements**, **pass/fail evaluation**, **relay-controlled switching**, and a **web-based dashboard** for real-time monitoring.  
 
-Features
+---
 
-Sequential testing of PCB test points using relays.
+## ✨ Features  
 
-Analog voltage measurements via MCP3008 ADC.
+✅ **Sequential PCB testing** using relay switching  
+✅ **Analog voltage measurements** via MCP3008 ADC  
+✅ **Digital continuity testing** using GPIO pins  
+✅ **Automated pass/fail evaluation** for each test point  
+✅ **Web dashboard (Flask)** for live monitoring  
+✅ **CSV logging** for traceability and documentation  
+✅ **Modular design** – extend with HiL testing, sensors, or IoT integration  
 
-Digital continuity testing using GPIO pins.
+---
 
-Automated pass/fail evaluation for each test point.
+## 🖼️ System Overview  
 
-Web dashboard built with Flask to display live test results.
+```
+Raspberry Pi  ──>  Relay Module ──> PCB Test Points
+       │
+       ├── MCP3008 (ADC) ──> Analog Measurements
+       ├── GPIO ──────────> Digital Continuity Tests
+       │
+   Flask Web App ──> Dashboard + Logging
+```
 
-CSV logging for documentation and traceability.
+---
 
-Modular design for easy expansion: HiL testing, additional sensors, or IoT integration.
+## 🔧 Hardware Requirements  
 
-Hardware Requirements
+- Raspberry Pi (any model with GPIO + SPI)  
+- MCP3008 ADC (for analog input)  
+- Relay module (to switch test points)  
+- PCB or test board with accessible test pads  
+- Jumper wires & breadboard (for prototyping)  
 
-Raspberry Pi (any model with GPIO and SPI)
+---
 
-MCP3008 ADC (for analog measurements)
+## 💻 Software Requirements  
 
-Relay module for switching test points
+- Python **3.x**  
+- [Flask](https://flask.palletsprojects.com/) → `pip install flask`  
+- [RPi.GPIO](https://pypi.org/project/RPi.GPIO/) → `pip install RPi.GPIO`  
+- [spidev](https://pypi.org/project/spidev/) → `pip install spidev`  
 
-PCB or test board with accessible test points
+---
 
-Jumper wires and breadboard (for prototyping)
+## 📂 Directory Structure  
 
-Software Requirements
-
-Python 3.x
-
-Flask (pip install flask)
-
-RPi.GPIO (pip install RPi.GPIO)
-
-spidev (pip install spidev)
-
-Directory Structure
+```
 pcb_test_automation/
 │
-├── app.py                # Web dashboard and test controller
+├── app.py                # Web dashboard + test controller
 ├── test_controller.py    # Core test routines
-├── config.py             # Hardware configuration
+├── config.py             # Hardware pin mapping + test configs
+│
 ├── templates/
-│   └── dashboard.html    # Web dashboard template
+│   └── dashboard.html    # Web UI for results
+│
 ├── static/
-│   └── style.css         # Optional styling
+│   └── style.css         # Dashboard styling
+│
 └── logs/
     └── pcb_test_results.csv  # Test results log
+```
 
+---
 
-Clone the repository:
+## 🚀 Getting Started  
 
+### 1️⃣ Clone Repository  
+```bash
 git clone https://github.com/yourusername/pcb_test_automation.git
 cd pcb_test_automation
+```
 
-
-Install required Python packages:
-
+### 2️⃣ Install Dependencies  
+```bash
 pip install flask RPi.GPIO spidev
+```
 
+### 3️⃣ Connect Hardware  
+- Wire **MCP3008** to Raspberry Pi SPI pins  
+- Connect **relay module** to GPIO (see `config.py`)  
+- Connect **PCB test points** to relay outputs + GPIO inputs  
 
-Connect hardware:
-
-Wire MCP3008 to Raspberry Pi SPI pins.
-
-Connect relay module to GPIO pins as defined in config.py.
-
-Connect digital test points to GPIO inputs.
-
-Run the web dashboard:
-
+### 4️⃣ Run the App  
+```bash
 python3 app.py
+```
 
+### 5️⃣ Open Dashboard  
+Navigate to:  
+👉 `http://<raspberry_pi_ip>:5000`  
 
-Access dashboard:
-Open a browser and go to http://<raspberry_pi_ip>:5000 to view test results in real-time.
+Live test results will appear in real-time.  
 
-Usage
+---
 
-Each test point is automatically switched using relays.
+## ⚙️ Usage  
 
-Analog and digital measurements are taken and evaluated against pass/fail criteria.
+- Each test point is **sequentially switched** using relays  
+- **Analog & digital values** are measured  
+- Results are evaluated **against pass/fail thresholds**  
+- Test outcomes are **logged to CSV** (`logs/pcb_test_results.csv`)  
 
-Results are logged in logs/pcb_test_results.csv.
-
-To clean up GPIO and SPI after testing:
-
+👉 To **clean up GPIO & SPI after testing**:  
+```
 http://<raspberry_pi_ip>:5000/cleanup
+```
+
+---
+
+## 📊 Example Dashboard  
+
+✅ **Real-time PCB test results**  
+✅ **Pass/Fail indicators**  
+✅ **Traceable CSV logging**  
+
+*(Add a screenshot here when available)*  
+
+---
+
+## 🤝 Contributing  
+
+Pull requests are welcome! For major changes, please open an issue first to discuss what you’d like to add.  
+
+---
+
+## 📜 License  
+
+This project is licensed under the **MIT License** – see the [LICENSE](LICENSE) file for details.  
+
+---
+
+⚡ Happy Testing! Automate your PCB validation workflow with Raspberry Pi & Python 🚀  
