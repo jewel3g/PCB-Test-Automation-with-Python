@@ -16,6 +16,7 @@
 ✅ **Modular design** – extend with HiL testing, sensors, or IoT integration  
 
 ---
+![PCB Test Dashboard](Screenshot%202025-08-30%20034800.png)
 
 ## 🖼️ System Overview  
 
