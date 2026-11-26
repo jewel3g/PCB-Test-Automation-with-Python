@@ -138,4 +138,10 @@ This project is licensed under the **MIT License** – see the [LICENSE](LICENSE
 
 ---
 
-⚡ Happy Testing! Automate your PCB validation workflow with Raspberry Pi & Python 🚀  
+⚡ Happy Testing! Automate your PCB validation workflow with Raspberry Pi & Python 🚀
+
+## Engineering context and validation
+
+Verify ADC calibration, fixture voltage limits, relay isolation and measurement repeatability.
+
+[Engineering portfolio](https://jewel3g.github.io). Production readiness is not independently verified.
