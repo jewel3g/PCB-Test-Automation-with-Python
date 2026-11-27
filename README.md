@@ -75,8 +75,8 @@ pcb_test_automation/
 
 ### 1️⃣ Clone Repository  
 ```bash
-git clone https://github.com/yourusername/pcb_test_automation.git
-cd pcb_test_automation
+git clone https://github.com/jewel3g/PCB-Test-Automation-with-Python.git
+cd PCB-Test-Automation-with-Python
 ```
 
 ### 2️⃣ Install Dependencies  
@@ -145,3 +145,14 @@ This project is licensed under the **MIT License** – see the [LICENSE](LICENSE
 Verify ADC calibration, fixture voltage limits, relay isolation and measurement repeatability.
 
 [Engineering portfolio](https://jewel3g.github.io). Production readiness is not independently verified.
+
+## Verification and fixture engineering
+
+| Test category | Acceptance evidence |
+|---|---|
+| Analog measurement | Known reference voltages, ADC calibration, uncertainty budget |
+| Relay switching | Break-before-make behavior, settling time and safe startup state |
+| Digital measurement | Voltage compatibility and known open/short fixture cases |
+| Logging | DUT serial number, fixture revision, software commit and timestamp |
+
+Recommended evolution: isolate hardware access behind a testable interface, store limits in versioned configuration, add simulated fixtures for CI, and ensure outputs return to a safe state on timeout or exception. Do not connect energized DUT nodes directly to GPIO or ADC inputs without suitable protection and scaling.
